@@ -27,6 +27,14 @@ flowchart LR
   R --> DB
 ```
 
+## Cum arată
+
+Cu datele demo (`DEMO_DATA=true`): o nuntă inventată, fără poză de fundal încărcată.
+
+| Ce primește un invitat, pe telefon | Ce văd mirii |
+|---|---|
+| <img src="docs/invitatie.gif" width="270" alt="Save the date-ul și invitația pe telefon: plicul cu sigiliu se deschide, apoi numărătoarea, cununia și petrecerea, programul zilei și formularul de confirmare"> | <img src="docs/aplicatie.gif" width="560" alt="Aplicația mirilor: Acasă, Invitați în tabel și pe familii, planul meselor, bugetul, sarcinile, desfășurătorul și setările"> |
+
 ## Ce face
 
 1. **Acasă**: câte zile mai sunt, câți au confirmat, costul estimat, darul de echilibru și
@@ -72,7 +80,8 @@ make up           # http://localhost:3000
 Fără `make`: `cp .env.example .env`, completați parola, apoi `docker compose up -d`.
 
 Vreți doar să vă uitați? Puneți `DEMO_DATA=true` în `.env` înainte de prima pornire: baza goală se
-umple cu o nuntă inventată (Ana și Mihai, 13 familii, un buget). Pentru nunta voastră, porniți pe o
+umple cu o nuntă inventată (Ana și Mihai, 22 de familii, 50 de invitați, mesele aranjate, un buget).
+Pentru nunta voastră, porniți pe o
 bază goală (`docker compose down -v` șterge volumul cu tot cu date).
 
 ### Online, cu domeniul vostru (HTTPS automat)

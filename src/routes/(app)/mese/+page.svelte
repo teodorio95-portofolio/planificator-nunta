@@ -268,8 +268,8 @@
 		</p>
 		<p class="small muted">
 			Sala are {HALL_SLOTS} locuri de mese, pe 3 coloane: jumătate deasupra ringului, jumătate dedesubt, întâi
-			lângă ring. Masa mirilor e sus, formația pe ring în dreapta; intrarea, ieșirea pe terasă, gelato bar-ul,
-			camera mirilor și toaleta sunt la locul lor. Estimarea vine din Setări. După generare, „Aranjează sala”
+			lângă ring. Masa mirilor e sus, formația pe ring în dreapta; intrarea, barul și candy bar-ul
+			sunt pe margini. Estimarea vine din Setări. După generare, „Aranjează sala”
 			vă lasă să mutați orice.
 		</p>
 	</details>
