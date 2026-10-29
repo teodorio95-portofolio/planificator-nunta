@@ -12,7 +12,7 @@
 | **Intrare** | Parolă pe rol, sau contul Google (opțional) |
 | **Tehnic** | SvelteKit 3 (Svelte 5), TypeScript, `node:sqlite` (fără module native), adapter-node |
 | **Date** | Un fișier SQLite + poza și muzica voastră, într-un volum Docker |
-| **Cost** | 0 lei pe calculatorul vostru; un VPS mic (~25 lei/lună) dacă îl puneți online |
+| **Cost** | 0 lei pe calculatorul vostru; online ~7 $/lună pe Render sau un VPS mic al vostru |
 | **Licență** | MIT |
 
 ```mermaid
@@ -60,14 +60,83 @@ Cu datele demo (`DEMO_DATA=true`): o nuntă inventată, fără poză de fundal �
    întârziați, *Mută acest moment și tot ce urmează*. Momentele bifate apar și pe invitație.
 8. **Notițe** (doar admin): notițe cu un mic calculator de cantități (7 trandafiri × 21 vaze).
 
-## Cerințe
+## Instalare
 
-- **Docker** cu Compose v2 (Docker Desktop, OrbStack, Colima sau Docker pe un VPS Linux), sau
-- **Node ≥ 24** pentru a rula fără container (dezvoltat pe Node 26).
+Invitații trebuie să poată deschide linkurile de pe telefon, deci pentru nunta adevărată aplicația
+trebuie să fie **online**. Pe calculatorul vostru e bună ca să o încercați sau să planificați doar voi.
 
-## Pornire rapidă
+| Varianta | Pentru cine | Instalați ceva? | Online pentru invitați? |
+|---|---|---|---|
+| [1. Online, dintr-un click](#1-online-dintr-un-click-render) | oricine | nu | da |
+| [2. Pe calculator, o comandă](#2-pe-calculatorul-vostru-o-singură-comandă) | oricine | Docker Desktop | nu |
+| [3. Pe serverul vostru](#3-pe-serverul-vostru-cu-domeniul-vostru) | tehnic | Docker pe un VPS | da |
 
-### Pe calculatorul vostru
+### 1. Online, dintr-un click (Render)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/teodorio95-portofolio/planificator-nunta)
+
+1. Apăsați butonul și faceți-vă cont pe [Render](https://render.com) (cu Google sau GitHub).
+2. În formular, la `ADMIN_PASSWORD`, scrieți o parolă a voastră (minim 8 caractere), apoi **Deploy
+   Blueprint**. Render adaugă un card de plată: aplicația are nevoie de un disc pentru date, iar
+   discul e doar pe planurile plătite.
+3. După 1–2 minute primiți o adresă de forma `https://planificator-nunta-xxxx.onrender.com`. Intrați
+   cu parola și trimiteți invitaților linkuri de acolo.
+
+Ce trebuie știut:
+
+- **Cost:** în jur de 7,25 $/lună (instanța *Starter* 7 $ + discul de 1 GB 0,25 $), cât e nevoie,
+  de obicei câteva luni până după nuntă. Planul gratuit nu are disc și ar pierde lista la fiecare
+  repornire, de aceea nu e folosit. Prețurile sunt cele publicate de Render în octombrie 2026.
+- **Datele** stau pe disc, în Frankfurt. Render face o copie a discului zilnic și o păstrează 7 zile;
+  *Setări → Descarcă backup* rămâne totuși recomandat.
+- **Versiuni noi** nu se instalează singure: în Render, *Manual Deploy → Deploy latest reference*.
+- **Domeniul vostru** (de ex. `nunta.exemplu.ro`) se adaugă din *Settings → Custom Domains*.
+- Dacă formularul nu v-a cerut parola, adăugați-o în *Environment* (`ADMIN_PASSWORD`); până atunci
+  aplicația arată doar o pagină care spune ce lipsește.
+
+### 2. Pe calculatorul vostru, o singură comandă
+
+1. Instalați [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Mac sau Windows) și porniți-l.
+2. Deschideți **Terminal** (Mac) sau **PowerShell** (Windows), lipiți comanda de mai jos, înlocuiți
+   `alegeti-o-parola` cu o parolă a voastră (minim 8 caractere, fără spații) și apăsați Enter:
+
+   ```bash
+   docker run -d --name nunta -p 3000:3000 -v nunta-data:/data -e ADMIN_PASSWORD=alegeti-o-parola --restart unless-stopped ghcr.io/teodorio95-portofolio/planificator-nunta
+   ```
+
+3. Deschideți <http://localhost:3000> și intrați cu parola.
+
+Datele rămân în volumul `nunta-data`, chiar dacă opriți sau ștergeți containerul. Vreți întâi să
+vedeți cum arată? Adăugați `-e DEMO_DATA=true` înainte de `ghcr.io/…` și aplicația pornește cu o nuntă
+inventată (Ana și Mihai, 22 de familii, 50 de invitați, mesele aranjate, un buget); pentru nunta
+voastră folosiți apoi alt volum, de ex. `-v nunta-reala:/data`.
+
+Actualizarea la o versiune nouă (datele rămân):
+
+```bash
+docker pull ghcr.io/teodorio95-portofolio/planificator-nunta
+docker rm -f nunta
+# apoi aceeași comandă `docker run` de mai sus
+```
+
+### 3. Pe serverul vostru, cu domeniul vostru
+
+Pe un VPS cu Docker, cu domeniul (de ex. `nunta.exemplu.ro`) îndreptat spre server și porturile 80
+și 443 deschise:
+
+```bash
+git clone https://github.com/teodorio95-portofolio/planificator-nunta.git
+cd planificator-nunta
+make env          # apoi în .env: ADMIN_PASSWORD=… și DOMAIN=nunta.exemplu.ro
+make up-https     # Caddy cere singur certificatul Let's Encrypt
+```
+
+Fără `make`: `cp .env.example .env`, completați `.env`, apoi
+`BIND_ADDRESS=127.0.0.1 docker compose -f compose.yaml -f compose.https.yaml up -d`.
+
+### Pentru dezvoltare
+
+Cu Node ≥ 24 (dezvoltat pe Node 26) sau Docker cu Compose v2:
 
 ```bash
 git clone https://github.com/teodorio95-portofolio/planificator-nunta.git
@@ -77,22 +146,9 @@ make env          # creează .env din .env.example
 make up           # http://localhost:3000
 ```
 
-Fără `make`: `cp .env.example .env`, completați parola, apoi `docker compose up -d`.
-
-Vreți doar să vă uitați? Puneți `DEMO_DATA=true` în `.env` înainte de prima pornire: baza goală se
-umple cu o nuntă inventată (Ana și Mihai, 22 de familii, 50 de invitați, mesele aranjate, un buget).
-Pentru nunta voastră, porniți pe o
-bază goală (`docker compose down -v` șterge volumul cu tot cu date).
-
-### Online, cu domeniul vostru (HTTPS automat)
-
-Pe un VPS cu Docker, cu domeniul (de ex. `nunta.exemplu.ro`) îndreptat spre server și porturile 80
-și 443 deschise:
-
-```bash
-make env          # apoi în .env: ADMIN_PASSWORD=… și DOMAIN=nunta.exemplu.ro
-make up-https     # Caddy cere singur certificatul Let's Encrypt
-```
+`make up` construiește imaginea din sursă; `make demo` pornește serverul de dezvoltare pe o bază cu
+nunta inventată. `DEMO_DATA=true` în `.env` face același lucru în container, pe o bază goală
+(`docker compose down -v` șterge volumul cu tot cu date).
 
 ### Primii pași în aplicație
 
@@ -169,6 +225,8 @@ src/
     media/[kind]/        poza și muzica, pentru paginile invitaților
 compose.yaml             containerul, cu volumul nunta-data
 compose.https.yaml       Caddy în față, cu HTTPS automat
+render.yaml              butonul „Deploy to Render": imaginea, discul și parola cerută la creare
+docker-entrypoint.mjs    dă discul montat utilizatorului node, apoi rulează aplicația fără root
 ```
 
 ## ⚠️ De reținut

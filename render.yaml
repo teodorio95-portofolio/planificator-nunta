@@ -1,0 +1,24 @@
+# "Deploy to Render" (README): the published image, a 1 GB disk for the database, cover photo and
+# music, in Frankfurt. A disk needs a paid instance; the free one loses its files on every restart.
+services:
+  - type: web
+    name: planificator-nunta
+    runtime: image
+    image:
+      url: ghcr.io/teodorio95-portofolio/planificator-nunta:latest
+    plan: starter
+    region: frankfurt
+    healthCheckPath: /health
+    disk:
+      name: nunta-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      # Asked for when the service is created: the admin password, at least 8 characters.
+      - key: ADMIN_PASSWORD
+        sync: false
+      # Render terminates TLS. The client address stays unset on purpose: how many proxies sit in front
+      # (Cloudflare, Render's balancer) is not documented, and a forged X-Forwarded-For must not pick
+      # the login rate limit's key.
+      - key: PROTOCOL_HEADER
+        value: x-forwarded-proto

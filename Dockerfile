@@ -18,12 +18,11 @@ ENV NODE_ENV=production \
     BODY_SIZE_LIMIT=12M
 # adapter-node bundles the dependencies into build/: there is no node_modules at runtime.
 COPY --from=build /app/build ./build
-COPY package.json db-snapshot.mjs ./
-# Owned by `node` in the image, so a named volume mounted here starts out writable by it too.
+COPY package.json db-snapshot.mjs docker-entrypoint.mjs ./
 RUN mkdir -p /data && chown node:node /data
-USER node
 VOLUME /data
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
   CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/health').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"
-CMD ["node", "build"]
+# Starts as root only to hand a mounted /data to `node`, then runs the app as `node` (see the script).
+CMD ["node", "docker-entrypoint.mjs"]
