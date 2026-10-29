@@ -1,0 +1,27 @@
+# HTTPS automat cu Caddy (certificat Let's Encrypt) pentru DOMAIN din .env:
+#   make up-https
+# adică BIND_ADDRESS=127.0.0.1 docker compose -f compose.yaml -f compose.https.yaml up -d
+# Domeniul trebuie să arate deja spre server (înregistrare DNS A/AAAA), cu porturile 80 și 443 deschise.
+services:
+  app:
+    # Aplicația află schema și adresa reală a vizitatorului din headerele lui Caddy. De aceea portul ei
+    # trebuie să rămână doar pe 127.0.0.1 (BIND_ADDRESS): din afară, headerele ar putea fi falsificate.
+    environment:
+      PROTOCOL_HEADER: x-forwarded-proto
+      ADDRESS_HEADER: x-forwarded-for
+
+  caddy:
+    image: caddy:2
+    command: caddy reverse-proxy --from ${DOMAIN:?setați DOMAIN în .env} --to app:3000
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - caddy-data:/data
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  caddy-data:

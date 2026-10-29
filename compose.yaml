@@ -1,0 +1,16 @@
+# Pe calculatorul vostru sau pe un server: `cp .env.example .env`, setați ADMIN_PASSWORD, apoi
+# `docker compose up -d` și http://localhost:3000. Pentru un domeniu cu HTTPS: compose.https.yaml.
+services:
+  app:
+    image: ghcr.io/teodorio95-portofolio/planificator-nunta:latest
+    build: .
+    env_file: .env
+    ports:
+      # BIND_ADDRESS=127.0.0.1 lasă aplicația accesibilă doar de pe server (în spatele Caddy).
+      - "${BIND_ADDRESS:-0.0.0.0}:${PORT:-3000}:3000"
+    volumes:
+      - nunta-data:/data
+    restart: unless-stopped
+
+volumes:
+  nunta-data:

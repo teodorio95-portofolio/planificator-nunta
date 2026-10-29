@@ -1,0 +1,492 @@
+:root {
+	--bg: #faf7f2;
+	--surface: #ffffff;
+	--surface-2: #f4efe7;
+	--ink: #24211d;
+	--muted: #736d65;
+	--line: #e7e0d5;
+	--accent: #7f8f6f;
+	--accent-ink: #56634a;
+	--accent-soft: #e9ede3;
+	--gold: #b08d5b;
+	--ok: #5b7c57;
+	--warn: #b17b45;
+	--bad: #a65a57;
+	--shadow: 0 1px 2px rgb(36 33 29 / 0.04), 0 8px 24px rgb(36 33 29 / 0.05);
+	/* The guest sheet's header and totals, green like the spreadsheet. */
+	--sheet-head: #c7dbbd;
+	--radius: 14px;
+	--serif: 'Cormorant Garamond', 'Times New Roman', serif;
+	--sans: 'Manrope', system-ui, -apple-system, sans-serif;
+	color-scheme: light;
+}
+
+/* Dark: chosen in the account menu, or left on Automat on a device set to dark (src/lib/theme.ts).
+   CSS cannot put both in one rule, so each dark block is written twice: keep the copies alike. */
+:root[data-mode='dark'] {
+	--bg: #1a1816;
+	--surface: #23201d;
+	--surface-2: #2b2824;
+	--ink: #efe9e0;
+	--muted: #a59e94;
+	--line: #3a3631;
+	--accent: #a7b897;
+	--accent-ink: #c4d2b6;
+	--accent-soft: #2f3529;
+	--gold: #cfae7c;
+	--ok: #8fb08a;
+	--warn: #d6a26e;
+	--bad: #d48a86;
+	--shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+	--sheet-head: color-mix(in srgb, var(--accent) 40%, var(--surface));
+	color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-mode='light']) {
+		--bg: #1a1816;
+		--surface: #23201d;
+		--surface-2: #2b2824;
+		--ink: #efe9e0;
+		--muted: #a59e94;
+		--line: #3a3631;
+		--accent: #a7b897;
+		--accent-ink: #c4d2b6;
+		--accent-soft: #2f3529;
+		--gold: #cfae7c;
+		--ok: #8fb08a;
+		--warn: #d6a26e;
+		--bad: #d48a86;
+		--shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+		--sheet-head: color-mix(in srgb, var(--accent) 40%, var(--surface));
+		color-scheme: dark;
+	}
+}
+
+/* The wedding palette (src/lib/theme.ts): ivory, pastel pink, lilac, peach, apricot and sage. */
+:root[data-theme='nunta'] {
+	--bg: #f8f6ec;
+	--surface: #fffdf8;
+	--surface-2: #f4ede6;
+	--ink: #2e2a2d;
+	--muted: #75696f;
+	--line: #ebe2dc;
+	--accent: #a7b88f;
+	--accent-ink: #5c6f4c;
+	--accent-soft: #f6e4ea;
+	--em: #b65f72;
+	--gold: #c97a52;
+	--progress: linear-gradient(90deg, #e7c6d3, #c9b8d9, #f4a684);
+	--header: #fbf2ef;
+	--brand: var(--em);
+	--nav-active: var(--em);
+	--ribbon: linear-gradient(90deg, #e7c6d3, #c9b8d9, #f4a684, #f7c08a, #a7b88f);
+	--ribbon-height: 2px;
+	--sheet-head: #c9b8d9;
+}
+
+:root[data-theme='nunta'][data-mode='dark'] {
+	--bg: #1c191b;
+	--surface: #252124;
+	--surface-2: #2e292d;
+	--ink: #f2ebe6;
+	--muted: #a99ea3;
+	--line: #3b3439;
+	--accent: #a7b88f;
+	--accent-ink: #c4d3ad;
+	--accent-soft: #3a2b33;
+	--em: #e7b3c4;
+	--gold: #f2b088;
+	--progress: linear-gradient(90deg, #d79bb2, #b9a3d6, #f4a684);
+	--header: #231e21;
+	--ribbon: linear-gradient(90deg, #d79bb2, #b9a3d6, #f4a684, #f7c08a, #a7b88f);
+	--sheet-head: color-mix(in srgb, #b9a3d6 35%, var(--surface));
+}
+
+@media (prefers-color-scheme: dark) {
+	:root[data-theme='nunta']:not([data-mode='light']) {
+		--bg: #1c191b;
+		--surface: #252124;
+		--surface-2: #2e292d;
+		--ink: #f2ebe6;
+		--muted: #a99ea3;
+		--line: #3b3439;
+		--accent: #a7b88f;
+		--accent-ink: #c4d3ad;
+		--accent-soft: #3a2b33;
+		--em: #e7b3c4;
+		--gold: #f2b088;
+		--progress: linear-gradient(90deg, #d79bb2, #b9a3d6, #f4a684);
+		--header: #231e21;
+		--ribbon: linear-gradient(90deg, #d79bb2, #b9a3d6, #f4a684, #f7c08a, #a7b88f);
+		--sheet-head: color-mix(in srgb, #b9a3d6 35%, var(--surface));
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+}
+/* Opened from the Home Screen there is no pull-to-refresh to lose: stop the page (and the header
+   with it) from bouncing past its top and bottom. */
+@media (display-mode: standalone) {
+	html {
+		overscroll-behavior: none;
+	}
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--ink);
+	font: 400 15px/1.55 var(--sans);
+	-webkit-font-smoothing: antialiased;
+	/* viewport-fit=cover: keep content off the notch and the home bar (0 everywhere else). */
+	padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+h1,
+h2,
+h3 {
+	font-family: var(--serif);
+	font-weight: 500;
+	line-height: 1.1;
+	margin: 0 0 0.4em;
+	letter-spacing: 0.005em;
+}
+h1 {
+	font-size: clamp(2.1rem, 5vw, 2.9rem);
+}
+h2 {
+	font-size: 1.65rem;
+}
+h3 {
+	font-size: 1.3rem;
+}
+h1 em,
+h2 em {
+	color: var(--em, var(--accent-ink));
+}
+
+a {
+	color: var(--accent-ink);
+}
+
+.muted {
+	color: var(--muted);
+}
+.small {
+	font-size: 0.85rem;
+}
+.eyebrow {
+	font-size: 0.72rem;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--muted);
+}
+
+.page {
+	max-width: 1080px;
+	margin: 0 auto;
+	padding: 28px 16px 64px;
+}
+.page-head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: end;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 24px;
+}
+.page-head p {
+	margin: 0;
+}
+
+.card {
+	background: var(--surface);
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	padding: 20px;
+}
+.card + .card {
+	margin-top: 16px;
+}
+
+.grid {
+	display: grid;
+	gap: 16px;
+}
+.grid > .card + .card {
+	margin-top: 0;
+}
+.grid.cols-2 {
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+.stats {
+	display: grid;
+	gap: 12px;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	margin-bottom: 20px;
+}
+.stat {
+	background: var(--surface);
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	padding: 14px 16px;
+}
+.stat .value {
+	font-family: var(--serif);
+	font-size: 2rem;
+	line-height: 1.1;
+	font-variant-numeric: lining-nums tabular-nums;
+}
+.stat .label {
+	font-size: 0.8rem;
+	color: var(--muted);
+}
+.stat.highlight {
+	background: var(--accent-soft);
+	border-color: transparent;
+}
+
+/* Forms */
+label {
+	display: grid;
+	gap: 4px;
+	font-size: 0.82rem;
+	color: var(--muted);
+}
+input,
+select,
+textarea,
+button {
+	font: inherit;
+	color: inherit;
+}
+input:not([type='checkbox']):not([type='radio']),
+select,
+textarea {
+	width: 100%;
+	padding: 9px 11px;
+	border: 1px solid var(--line);
+	border-radius: 10px;
+	background: var(--surface);
+	color: var(--ink);
+	font-size: 0.95rem;
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 1px;
+}
+textarea {
+	resize: vertical;
+	min-height: 80px;
+}
+input[type='checkbox'],
+input[type='radio'] {
+	accent-color: var(--accent);
+	width: 18px;
+	height: 18px;
+}
+.form-row {
+	display: grid;
+	gap: 12px;
+	grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+	align-items: end;
+}
+.form-stack {
+	display: grid;
+	gap: 14px;
+}
+
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 9px 18px;
+	border-radius: 999px;
+	border: 1px solid var(--ink);
+	background: var(--ink);
+	color: var(--bg);
+	font-size: 0.9rem;
+	font-weight: 500;
+	cursor: pointer;
+	text-decoration: none;
+	white-space: nowrap;
+}
+.btn:hover {
+	opacity: 0.88;
+}
+.btn.ghost {
+	background: transparent;
+	color: var(--ink);
+	border-color: var(--line);
+}
+.btn.ghost:hover {
+	border-color: var(--ink);
+}
+.btn.small {
+	padding: 5px 12px;
+	font-size: 0.8rem;
+}
+.btn.danger {
+	background: transparent;
+	color: var(--bad);
+	border-color: transparent;
+}
+.link-btn {
+	background: none;
+	border: 0;
+	padding: 0;
+	color: var(--muted);
+	cursor: pointer;
+	font-size: 0.85rem;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+/* Tables */
+.table-wrap {
+	overflow-x: auto;
+	margin: 0 -20px;
+	padding: 0 20px;
+}
+table.list {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.92rem;
+}
+table.list th {
+	text-align: left;
+	font-weight: 500;
+	font-size: 0.75rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--muted);
+	padding: 8px 10px;
+	border-bottom: 1px solid var(--line);
+}
+table.list td {
+	padding: 10px;
+	border-bottom: 1px solid var(--line);
+	vertical-align: middle;
+}
+table.list tr:last-child td {
+	border-bottom: 0;
+}
+.num {
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+/* Pills */
+.pill {
+	display: inline-block;
+	padding: 2px 10px;
+	border-radius: 999px;
+	font-size: 0.75rem;
+	background: var(--surface-2);
+	color: var(--muted);
+	white-space: nowrap;
+}
+.pill.yes {
+	background: color-mix(in srgb, var(--ok) 15%, transparent);
+	color: var(--ok);
+}
+.pill.no {
+	background: color-mix(in srgb, var(--bad) 13%, transparent);
+	color: var(--bad);
+}
+.pill.pending {
+	background: color-mix(in srgb, var(--warn) 14%, transparent);
+	color: var(--warn);
+}
+.pill.gold {
+	background: color-mix(in srgb, var(--gold) 16%, transparent);
+	color: var(--gold);
+}
+
+.progress {
+	height: 6px;
+	border-radius: 999px;
+	background: var(--surface-2);
+	overflow: hidden;
+}
+.progress > span {
+	display: block;
+	height: 100%;
+	background: var(--progress, var(--accent));
+	border-radius: inherit;
+}
+
+.empty {
+	text-align: center;
+	padding: 36px 16px;
+	color: var(--muted);
+}
+.empty h3 {
+	color: var(--ink);
+}
+
+.flash {
+	padding: 10px 14px;
+	border-radius: 10px;
+	background: var(--accent-soft);
+	color: var(--accent-ink);
+	margin-bottom: 16px;
+	font-size: 0.9rem;
+}
+.flash.error {
+	background: color-mix(in srgb, var(--bad) 12%, transparent);
+	color: var(--bad);
+}
+
+/* Touch screens only (iPhone, iPad): a mouse or trackpad never matches, so desktop stays as is. */
+@media (pointer: coarse) {
+	/* iOS zooms into any field under 16px on focus and does not zoom back out. */
+	input:not([type='checkbox']):not([type='radio']),
+	select,
+	textarea {
+		font-size: max(16px, 0.95rem);
+	}
+	input[type='checkbox'],
+	input[type='radio'] {
+		width: 22px;
+		height: 22px;
+	}
+	.btn {
+		min-height: 44px;
+	}
+	.btn.small {
+		min-height: 36px;
+		padding-inline: 14px;
+	}
+	/* A bigger hit area for text buttons without moving anything around them. */
+	.link-btn {
+		padding: 10px 6px;
+		margin: -10px -6px;
+	}
+}
+
+@media print {
+	.no-print {
+		display: none !important;
+	}
+	body {
+		background: #fff;
+	}
+	.card {
+		box-shadow: none;
+	}
+}
