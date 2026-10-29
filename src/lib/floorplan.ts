@@ -38,13 +38,10 @@ export const BAND: FloorFeature = { label: 'Formație / DJ', x: 67, y: 51, w: 8,
 export const FEATURES: FloorFeature[] = [
 	{ label: 'Ring de dans', x: 50, y: 51, w: 44, h: 12 },
 	{ label: 'Intrare', x: 21, y: 51, w: 9, h: 9 },
-	// In line with the right column's floor-side row, where the hall has no table.
-	{ label: 'Ieșire terasă', x: 90, y: 36, w: 10, h: 10 },
-	// Next to the left table of the bottom floor-side row.
-	{ label: 'Gelato bar', x: 10, y: 67, w: 11, h: 10 },
-	// Along the bottom wall, under the middle and right columns.
-	{ label: 'Camera mirilor', x: 50, y: 97, w: 14, h: 6 },
-	{ label: 'Toaletă', x: 70, y: 97, w: 10, h: 6 }
+	// Beside the floor on the right, where the template leaves no table.
+	{ label: 'Bar', x: 90, y: 51, w: 10, h: 9 },
+	// Along the bottom wall, under the middle column.
+	{ label: 'Candy bar', x: 50, y: 97, w: 14, h: 6 }
 ];
 
 /** Splits `n` into `parts` sizes that differ by at most one, larger first: (7, 2) → [4, 3]. */
